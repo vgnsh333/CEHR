@@ -7,7 +7,6 @@ def get_org(db: Session, org_id: int):
     return db.query(models.Org).filter(models.Org.org_ID == org_id).first()
 
 def get_orgs(db: Session, skip: int = 1, limit: int = 100):
-    print("hello \n \n",db.query(models.Org))
     return db.query(models.Org).offset(skip).limit(limit).all()
 
 def create_org(db: Session, org: schemas.OrgCreate):
@@ -51,8 +50,16 @@ def create_user(db: Session, user: schemas.userCreate):
     return db_obj
 
 def get_user(db: Session, user_id: int):
-    return db.query(models.user_id).filter(models.user_details.user_id == user_id).first()
+    return db.query(models.user_details).filter(models.user_details.user_id == user_id).first()
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.user_id).offset(skip).limit(limit).all()
+    return db.query(models.user_details).offset(skip).limit(limit).all()
 
+# Practitioner
+
+def create_practitioner(db: Session, practitioner: schemas.PractitionerBase):
+    db_obj = models.user_details()
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj

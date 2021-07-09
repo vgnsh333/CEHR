@@ -24,25 +24,41 @@ class BedCreate(BedBase):
 class Bed(BedBase):
     id: int
     is_occupied: bool
-    class Config:
-        orm_mode = True
+
+# User
 
 class Userbase(BaseModel):
-    username = str
-    secret = str
-    phone = str
-    email = str
-    entity_type = str
-    aadhar = str
-    org_id = str
-    fullname = str
-    address = str
-    dob = str
-    blood_group = str
-    gender = str
+    username : str
+    secret : str
+    phone : str
+    email : str
+    entity_type : str
+    aadhar : str
+    org_id : int
+    fullname : str
+    address : str
+    dob : str
+    blood_group : str
+    gender : str
 
 class userCreate(Userbase):
-    password = str
+    password : str
 
 class User(Userbase):
     user_id : int
+    class Config:
+        orm_mode = True
+
+# Practitioner
+
+class PractitionerBase(BaseModel):
+    status : str
+    department : str
+    photo : str
+    user_id : int
+
+class Practitioner(PractitionerBase):
+    practitioner_id : str
+    class Config:
+        orm_mode = True
+
