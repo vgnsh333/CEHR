@@ -116,3 +116,106 @@ class Appointment(Base):
     service_type = Column(String)
     specialty = Column(String)
     status = Column(String)
+
+class Procedure(Base):
+    __tablename__ = "procedure"
+    procedure_id = Column(Integer, primary_key=True, index=True)
+    category = Column(String)
+    code = Column(String)
+    complication = Column(String)
+    focal_device_action = Column(String)
+    follow_up = Column(String)
+    outcome = Column(String)
+    performer_function = Column(String)
+    reason_code = Column(String)
+    status = Column(String)
+    status_reason = Column(String)
+    used_code = Column(String)
+    practitioner_id = Column(Integer, ForeignKey("practitioner.practitioner_id"), nullable=False)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    
+class Allergy(Base):
+    __tablename__ = "allergy"
+    allergy_id  = Column(Integer, primary_key=True, index=True)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    category = Column(String)
+    clinical_status = Column(String)
+    criticality = Column(String)
+    purpose = Column(String)
+    reaction_exposure_route = Column(String)
+    reaction_manifestation = Column(String)
+    reaction_substance = Column(String)
+    verification_status = Column(String)
+    code = Column(String)
+
+class Report(Base):
+    __tablename__ = "report"
+    report_id = Column(Integer, primary_key=True, index=True)
+    practitioner_id = Column(Integer, ForeignKey("practitioner.practitioner_id"), nullable=False)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    code = Column(String)
+    conclusion_code = Column(String)
+    category = Column(String)
+    status = Column(String)
+
+class Medication(Base):
+    __tablename__ = "medication"
+    medication_id = Column(Integer, primary_key=True, index=True)
+    code = Column(String)
+    form = Column(String)
+    status = Column(String)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    
+class Statement(Base):
+    __tablename__ = "statement"
+    statement_id = Column(Integer, primary_key=True, index=True)
+    category = Column(String)
+    medications = Column(String)
+    reason_code = Column(String)
+    status = Column(String)
+    status_reasons = Column(String)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    
+class BMI(Base):
+    __tablename__ = "bmi"
+    bmi_id = Column(Integer, primary_key=True, index=True)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    date =  Column(String)
+    height =  Column(String)
+    weight =  Column(String)
+    blood_pressure = Column(String)
+
+class Problem(Base):
+    __tablename__  = "problem"
+    problem_id = Column(Integer, primary_key=True, index=True)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    body_site = Column(String)
+    category = Column(String)
+    clinical_status = Column(String)
+    code = Column(String)
+    evidence_code = Column(String)
+    reaction_severity = Column(String)
+    severity = Column(String)
+    stage_summary = Column(String)
+    stage_type = Column(String)
+    verification_status = Column(String)
+
+
+class Family_history(Base):
+    __tablename__ = "family_history"
+    familyhistory_id = Column(Integer, primary_key=True, index=True)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    condition_code = Column(String)
+    condition_outcome = Column(String)
+    data_absent_reason = Column(String)
+    reason_code = Column(String)
+    relationship = Column(String)
+    sex = Column(String)
+    status = Column(String)
+    
+class invoice(Base):
+    pass
+class Schedule(Base):
+    pass
+class logs(Base):
+    pass
