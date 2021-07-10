@@ -17,7 +17,7 @@ class beds(Base):
     is_occupied = Column(Boolean, default=True)
     org_ID = Column(Integer, ForeignKey("org.org_ID"), nullable=False)
 
-class user_details(Base):
+class user_details(Base): 
     __tablename__ = "user_details"
     user_id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, nullable=False)
@@ -40,7 +40,7 @@ class Practitioner(Base):
     status = Column(String)
     department = Column(String)
     photo = Column(String)
-    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class Patient(Base):
     __tablename__ = "patient"
@@ -53,7 +53,7 @@ class Patient(Base):
     bloodgroup = Column(String)
     status = Column(String)
     photo = Column(String)
-    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class Care_team(Base):
     __tablename__ = "care_team"
@@ -61,14 +61,14 @@ class Care_team(Base):
     status = Column(String)
     department = Column(String)
     photo = Column(String)
-    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class admin(Base):
     __tablename__ = "admin"
     admin_id = Column(Integer, primary_key=True, index=True)
     status = Column(String)
     photo = Column(String)
-    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class Immunization(Base):
     __tablename__ = "immunization"
@@ -214,8 +214,17 @@ class Family_history(Base):
     status = Column(String)
     
 class invoice(Base):
-    pass
-class Schedule(Base):
-    pass
+    __tablename__ = "invoice"
+    invoice_id = Column(Integer, primary_key=True, index=True)
+    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    description = Column(String)
+    unit_cost = Column(String)
+    quantity = Column(String)
+# class Schedule(Base):
+#     pass
 class logs(Base):
-    pass
+    __tablename__ = "logs"
+    log_id = Column(Integer, primary_key=True, index=True)
+    description = Column(String)
+    patient_id  = Column(Integer, ForeignKey("user_details.user_id"), nullable=False)
+    performer_id  = Column(Integer, ForeignKey("user_details.user_id"), nullable=False)
