@@ -7,13 +7,29 @@ from fastapi_login.exceptions import InvalidCredentialsException
 import crud, models, schemas
 from database import SessionLocal, engine
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
 SECRET = "your-secret-key"
 app = FastAPI()
 
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "http://localhost:3000",
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 manager = LoginManager(SECRET, token_url='/auth/token')
 fake_db = {'j': {'password': 'h'}}
 @manager.user_loader
