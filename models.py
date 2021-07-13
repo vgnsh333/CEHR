@@ -75,15 +75,10 @@ class Immunization(Base):
     immunization_id = Column(Integer, primary_key=True, index=True)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
     funding_source = Column(String)
-    performer_function = Column(String)
-    program_eligibility = Column(String)
     reason_code = Column(String)
     report_origin = Column(String)
     route = Column(String)
     site = Column(String)
-    status = Column(String)
-    status_reason = Column(String)
-    subpotent_reason = Column(String)
     target_disease = Column(String)
     vaccine_code = Column(String)
 
@@ -92,12 +87,9 @@ class Observation(Base):
     observation_id  = Column(Integer, primary_key=True, index=True)
     practitioner_id = Column(Integer, ForeignKey("practitioner.practitioner_id"), nullable=False)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
-    applies_to = Column(String)
     body_site = Column(String)
     category = Column(String)
     component_interpretation = Column(String)
-    component_code = Column(String)
-    data_absent_reason = Column(String)
     method = Column(String)
     status = Column(String)
     observation_type = Column(String)
@@ -108,14 +100,11 @@ class Appointment(Base):
     appointment_type = Column(String)
     practitioner_id = Column(Integer, ForeignKey("practitioner.practitioner_id"), nullable=False)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
-    cancelation_reason = Column(String)
-    participant_required = Column(String)
     participant_type = Column(String)
     reason_code = Column(String)
-    service_category = Column(String)
-    service_type = Column(String)
     specialty = Column(String)
     status = Column(String)
+    date = Column(String)
 
 class Procedure(Base):
     __tablename__ = "procedure"
@@ -123,10 +112,8 @@ class Procedure(Base):
     category = Column(String)
     code = Column(String)
     complication = Column(String)
-    focal_device_action = Column(String)
     follow_up = Column(String)
     outcome = Column(String)
-    performer_function = Column(String)
     reason_code = Column(String)
     status = Column(String)
     status_reason = Column(String)
@@ -141,13 +128,10 @@ class Allergy(Base):
     category = Column(String)
     clinical_status = Column(String)
     criticality = Column(String)
-    purpose = Column(String)
     reaction_exposure_route = Column(String)
     reaction_manifestation = Column(String)
     reaction_substance = Column(String)
-    verification_status = Column(String)
-    code = Column(String)
-
+    
 class Report(Base):
     __tablename__ = "report"
     report_id = Column(Integer, primary_key=True, index=True)
@@ -161,7 +145,7 @@ class Report(Base):
 class Medication(Base):
     __tablename__ = "medication"
     medication_id = Column(Integer, primary_key=True, index=True)
-    code = Column(String)
+    medicine_name = Column(String)
     form = Column(String)
     status = Column(String)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
@@ -184,6 +168,7 @@ class BMI(Base):
     height =  Column(String)
     weight =  Column(String)
     blood_pressure = Column(String)
+    cholestrol = Column(String)
 
 class Problem(Base):
     __tablename__  = "problem"
@@ -196,10 +181,7 @@ class Problem(Base):
     evidence_code = Column(String)
     reaction_severity = Column(String)
     severity = Column(String)
-    stage_summary = Column(String)
-    stage_type = Column(String)
-    verification_status = Column(String)
-
+    
 
 class Family_history(Base):
     __tablename__ = "family_history"
@@ -217,9 +199,9 @@ class invoice(Base):
     __tablename__ = "invoice"
     invoice_id = Column(Integer, primary_key=True, index=True)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
-    description = Column(String)
-    unit_cost = Column(String)
-    quantity = Column(String)
+    invoice_details = Column(String)
+    total_amount = Column(String)
+    
 # class Schedule(Base):
 #     pass
 class logs(Base):

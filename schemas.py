@@ -100,14 +100,11 @@ class AppointmentBase(BaseModel):
     appointment_type : str
     practitioner_id : int
     patient_id  : int
-    cancelation_reason : str
-    participant_required : str
     participant_type : str
     reason_code : str
-    service_category : str
-    service_type : str
     specialty : str
     status : str
+    date : str
 class Appointment(AppointmentBase):
     appointment_id : int
     class Config:
@@ -116,15 +113,10 @@ class Appointment(AppointmentBase):
 class ImmunizationBase(BaseModel):
     patient_id  : int
     funding_source : str
-    performer_function : str
-    program_eligibility : str
     reason_code : str
     report_origin : str
     route : str
     site : str
-    status : str
-    status_reason : str
-    subpotent_reason : str
     target_disease : str
     vaccine_code : str
 class Immunization(ImmunizationBase):
@@ -135,12 +127,9 @@ class Immunization(ImmunizationBase):
 class ObservationBase(BaseModel):
     practitioner_id : int
     patient_id  : int
-    applies_to : str
     body_site : str
     category : str
     component_interpretation : str
-    component_code : str
-    data_absent_reason : str
     method : str
     status : str
     observation_type : str
@@ -153,10 +142,8 @@ class ProcedureBase(BaseModel):
     category : str
     code : str
     complication : str
-    focal_device_action : str
     follow_up : str
     outcome : str
-    performer_function : str
     reason_code : str
     status : str
     status_reason : str
@@ -174,11 +161,9 @@ class AllergyBase(BaseModel):
     category : str
     clinical_status : str
     criticality : str
-    purpose : str
     reaction_exposure_route : str
     reaction_manifestation : str
     reaction_substance : str
-    verification_status : str
     code : str
 class Allergy(AllergyBase):
     allergy_id  : int
@@ -201,7 +186,7 @@ class Report(ReportBase):
 
 
 class MedicationBase(BaseModel):
-    code : str
+    medicine_name : str
     form : str
     status : str
     patient_id : int
@@ -230,6 +215,7 @@ class BMIBase(BaseModel):
     height : str
     weight : str
     blood_pressure : str
+    cholestrol : str
 class BMI(BMIBase):
     bmi_id : int
     class Config:
@@ -245,9 +231,7 @@ class ProblemBase(BaseModel):
     evidence_code : str
     reaction_severity : str
     severity : str
-    stage_summary : str
-    stage_type : str
-    verification_status : str
+    
 class Problem(ProblemBase):
     problem_id : int
     class Config:
@@ -272,10 +256,9 @@ class FamilyHistory(FamilyHistoryBase):
 
 class InvoiceBase(BaseModel):
     patient_id  : int
-    description : str
-    unit_cost : str
-    quantity : str
+    invoice_details : str
 class Invoice(InvoiceBase):
+    total_amount : str
     invoice_id : str
     class Config:
         orm_mode = True

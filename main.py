@@ -7,25 +7,21 @@ from fastapi_login.exceptions import InvalidCredentialsException
 import crud, models, schemas
 from database import SessionLocal, engine
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
 SECRET = "your-secret-key"
 app = FastAPI()
 
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8000",
-    "http://localhost:8080",
-    "http://localhost:3000",
-]
-
+origins = ['*']
+# remove statment
+# REMOVE REPORT 
+# Procedure -> remove performerFunction ; focalDeviceAction.csv
+# 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,8 +62,13 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
 # Org
 
 @app.post("/org/add", response_model=schemas.Org, tags=["Organization"])
-def create_org(org: schemas.OrgCreate, db: Session = Depends(get_db), isLoggedIn=Depends(manager)):
+def create_org(org: schemas.OrgCreate, db: Session = Depends(get_db)):
     print(org)
+    temp_obj =db.query(models.Org).filter(models.Org.org_name == org.org_name).first()
+    print('hellllllllllloooooooooo')
+    print(temp_obj)
+    if temp_obj:
+        raise HTTPException(status_code=406, detail="Org name taken")
     return crud.create_org(db=db, org=org)
 
 
@@ -238,20 +239,20 @@ def get_allergy(allergy_id: int, db: Session = Depends(get_db), isLoggedIn=Depen
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
 # Report
-@app.post("/report/add", response_model=schemas.Report, tags=["Report"])
-def create_report(Report: schemas.ReportBase, db: Session = Depends(get_db), isLoggedIn=Depends(manager)):
-    return crud.create_report(db,Report)
+# @app.post("/report/add", response_model=schemas.Report, tags=["Report"])
+# def create_report(Report: schemas.ReportBase, db: Session = Depends(get_db), isLoggedIn=Depends(manager)):
+#     return crud.create_report(db,Report)
 
-@app.get("/report/all", response_model=List[schemas.Report], tags=["Report"])
-def get_all_report(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_reports(db, skip=skip, limit=limit)
+# @app.get("/report/all", response_model=List[schemas.Report], tags=["Report"])
+# def get_all_report(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     return crud.get_reports(db, skip=skip, limit=limit)
 
-@app.get("/report/{report_id}", response_model=schemas.Report, tags=["Report"])
-def get_report(report_id: int, db: Session = Depends(get_db), isLoggedIn=Depends(manager)):
-    temp_obj = crud.get_report(db, report_id)
-    if temp_obj is None:
-        raise HTTPException(status_code=404, detail=" not found")
-    return temp_obj
+# @app.get("/report/{report_id}", response_model=schemas.Report, tags=["Report"])
+# def get_report(report_id: int, db: Session = Depends(get_db), isLoggedIn=Depends(manager)):
+#     temp_obj = crud.get_report(db, report_id)
+#     if temp_obj is None:
+#         raise HTTPException(status_code=404, detail=" not found")
+#     return temp_obj
 # Medication
 @app.post("/medication/add", response_model=schemas.Medication, tags=["Medication"])
 def create_medication(Medication: schemas.MedicationBase, db: Session = Depends(get_db), isLoggedIn=Depends(manager)):
