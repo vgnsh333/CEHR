@@ -9,6 +9,7 @@ class Org(Base):
     org_name = Column(String, unique=True, nullable=False)
     purpose = Column(String)
     org_type = Column(String)
+    max_bed = Column(String)
     
 class beds(Base):
     __tablename__ = "beds"

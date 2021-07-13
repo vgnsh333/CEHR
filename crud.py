@@ -10,7 +10,7 @@ def get_orgs(db: Session, skip: int = 1, limit: int = 100):
     return db.query(models.Org).offset(skip).limit(limit).all()
 
 def create_org(db: Session, org: schemas.OrgCreate):
-    db_org = models.Org(org_name=org.org_name, purpose=org.purpose, org_type=org.org_type)
+    db_org = models.Org(org_name=org.org_name, purpose=org.purpose, org_type=org.org_type, max_bed=org.max_bed)
     db.add(db_org)
     db.commit()
     db.refresh(db_org)
@@ -19,6 +19,9 @@ def create_org(db: Session, org: schemas.OrgCreate):
 # Beds functions
 def get_beds(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.beds).offset(skip).limit(limit).all()
+
+def get_beds_of_patient(db: Session, patient_id: int):
+    return db.query(models.beds).filter(models.beds.patient_id == patient_id).all()
 
 def create_bed(db: Session, bed: schemas.BedCreate):
     db_bed = models.Org(alloted_to=bed.alloted_to, org_name=bed.org_name)
@@ -112,7 +115,11 @@ def create_appointment(db: Session, appointment: schemas.AppointmentBase):
     db.commit()
     db.refresh(db_obj)
     return db_obj
-    
+
+def get_appointment_of_patient(db: Session, patient_id: int):
+    return db.query(models.Appointment).filter(models.Appointment.patient_id == patient_id).all()
+
+
 def get_appointment(db: Session, appointment_id: int):
     return db.query(models.Appointment).filter(models.Appointment.appointment_id == appointment_id).first()
 
@@ -131,6 +138,11 @@ def create_immunization(db: Session, Immunization: schemas.ImmunizationBase):
 def get_immunization(db: Session, immunization_id: int):
     return db.query(models.Immunization).filter(models.Immunization.immunization_id == immunization_id).first()
 
+def get_immunization_of_patient(db: Session, patient_id: int):
+    return db.query(models.Immunization).filter(models.Immunization.patient_id == patient_id).all()
+
+
+
 def get_immunizations(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Immunization).offset(skip).limit(limit).all()
 
@@ -145,6 +157,10 @@ def create_observation(db: Session, Observation: schemas.ObservationBase):
     
 def get_observation(db: Session, observation_id: int):
     return db.query(models.Observation).filter(models.Observation.observation_id == observation_id).first()
+
+def get_observation_of_patient(db: Session, patient_id: int):
+    return db.query(models.Observation).filter(models.Observation.patient_id == patient_id).all()
+
 
 def get_observations(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Observation).offset(skip).limit(limit).all()
@@ -162,6 +178,10 @@ def create_procedure(db: Session, Procedure: schemas.ProcedureBase):
 def get_procedure(db: Session, procedure_id: int):
     return db.query(models.Procedure).filter(models.Procedure.procedure_id == procedure_id).first()
 
+def get_procedure_of_patient(db: Session, patient_id: int):
+    return db.query(models.Procedure).filter(models.Procedure.patient_id == patient_id).all()
+
+
 def get_procedures(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Procedure).offset(skip).limit(limit).all()
 
@@ -176,6 +196,9 @@ def create_allergy(db: Session, Allergy: schemas.AllergyBase):
     
 def get_allergy(db: Session, allergy_id: int):
     return db.query(models.Allergy).filter(models.Allergy.allergy_id == allergy_id).first()
+
+def get_allergy_of_patient(db: Session, patient_id: int):
+    return db.query(models.Allergy).filter(models.Allergy.patient_id == patient_id).all()
 
 def get_allergies(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Allergy).offset(skip).limit(limit).all()
@@ -207,6 +230,9 @@ def create_medication(db: Session, Medication: schemas.MedicationBase):
 def get_medication(db: Session, medication_id: int):
     return db.query(models.Medication).filter(models.Medication.medication_id == medication_id).first()
 
+def get_medication_of_patient(db: Session, patient_id: int):
+    return db.query(models.Medication).filter(models.Medication.patient_id == patient_id).all()
+
 def get_medications(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Medication).offset(skip).limit(limit).all()
 
@@ -222,6 +248,9 @@ def create_statement(db: Session, Statement: schemas.StatementBase):
 def get_statement(db: Session, statement_id: int):
     return db.query(models.Statement).filter(models.Statement.statement_id == statement_id).first()
 
+def get_statement_of_patient(db: Session, patient_id: int):
+    return db.query(models.Statement).filter(models.Statement.patient_id == patient_id).all()
+
 def get_statements(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Statement).offset(skip).limit(limit).all()
 
@@ -236,6 +265,8 @@ def create_bmi(db: Session, BMI: schemas.BMIBase):
     
 def get_bmi(db: Session, bmi_id: int):
     return db.query(models.BMI).filter(models.BMI.bmi_id == bmi_id).first()
+def get_bmi_of_patient(db: Session, patient_id: int):
+    return db.query(models.BMI).filter(models.BMI.patient_id == patient_id).all()
 
 def get_bmis(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.BMI).offset(skip).limit(limit).all()
@@ -251,6 +282,8 @@ def create_problem(db: Session, Problem: schemas.ProblemBase):
     
 def get_problem(db: Session, problem_id: int):
     return db.query(models.Problem).filter(models.Problem.problem_id == problem_id).first()
+def get_problem_of_patient(db: Session, patient_id: int):
+    return db.query(models.Problem).filter(models.Problem.patient_id == patient_id).all()
 
 def get_problems(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Problem).offset(skip).limit(limit).all()
@@ -266,6 +299,9 @@ def create_family_history(db: Session, Family_history: schemas.FamilyHistoryBase
     
 def get_family_history(db: Session, familyhistory_id: int):
     return db.query(models.Family_history).filter(models.Family_history.familyhistory_id == familyhistory_id ).first()
+    
+def get_family_history_of_patient(db: Session, patient_id: int):
+    return db.query(models.Family_history).filter(models.Family_history.patient_id == patient_id ).all()
 
 def get_family_histories(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Family_history).offset(skip).limit(limit).all()
@@ -281,6 +317,9 @@ def create_invoice(db: Session, invoice: schemas.InvoiceBase):
     
 def get_invoice(db: Session, invoice_id: int):
     return db.query(models.invoice).filter(models.invoice.invoice_id == invoice_id).first()
+    
+def get_invoice_of_patient(db: Session, patient_id: int):
+    return db.query(models.invoice).filter(models.invoice.patient_id == patient_id).all()
 
 def get_invoices(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.invoice).offset(skip).limit(limit).all()
@@ -296,6 +335,9 @@ def create_log(db: Session, logs: schemas.LogsBase):
     
 def get_log(db: Session, log_id: int):
     return db.query(models.logs).filter(models.logs.log_id == log_id).first()
+    
+def get_log_of_patient(db: Session, patient_id: int):
+    return db.query(models.logs).filter(models.logs.patient_id == patient_id).all()
 
 def get_logs(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.logs).offset(skip).limit(limit).all()

@@ -5,6 +5,7 @@ class OrgBase(BaseModel):
     org_name: str
     purpose: str
     org_type: str
+    max_bed : int
 class OrgCreate(OrgBase):
     pass
 class Org(OrgBase):
@@ -15,6 +16,7 @@ class Org(OrgBase):
 class BedBase(BaseModel):
     alloted_to: str
     org_name: str
+    
 class BedCreate(BedBase):
     pass
 class Bed(BedBase):
@@ -69,7 +71,7 @@ class PatientBase(BaseModel):
     photo : str
     user_id : int
 class Patient(PatientBase):
-    patient_id = int 
+    patient_id : int 
     class Config:
         orm_mode = True
 
