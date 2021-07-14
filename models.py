@@ -40,7 +40,7 @@ class Practitioner(Base):
     practitioner_id = Column(Integer, primary_key=True, index=True)
     status = Column(String)
     department = Column(String)
-    photo = Column(String)
+    photo = Column(String, default='https://simplyilm.com/wp-content/uploads/2017/08/temporary-profile-placeholder-1.jpg')
     user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class Patient(Base):
@@ -53,7 +53,7 @@ class Patient(Base):
     contact_number = Column(String)
     bloodgroup = Column(String)
     status = Column(String)
-    photo = Column(String)
+    photo = Column(String, default='https://simplyilm.com/wp-content/uploads/2017/08/temporary-profile-placeholder-1.jpg')
     user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class Care_team(Base):
@@ -61,14 +61,14 @@ class Care_team(Base):
     careteam_id = Column(Integer, primary_key=True, index=True)
     status = Column(String)
     department = Column(String)
-    photo = Column(String)
+    photo = Column(String, default='https://simplyilm.com/wp-content/uploads/2017/08/temporary-profile-placeholder-1.jpg')
     user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class admin(Base):
     __tablename__ = "admin"
     admin_id = Column(Integer, primary_key=True, index=True)
     status = Column(String)
-    photo = Column(String)
+    photo = Column(String, default='https://simplyilm.com/wp-content/uploads/2017/08/temporary-profile-placeholder-1.jpg')
     user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
 
 class Immunization(Base):
@@ -106,6 +106,7 @@ class Appointment(Base):
     specialty = Column(String)
     status = Column(String)
     date = Column(String)
+    time = Column(String)
 
 class Procedure(Base):
     __tablename__ = "procedure"
@@ -199,9 +200,12 @@ class Family_history(Base):
 class invoice(Base):
     __tablename__ = "invoice"
     invoice_id = Column(Integer, primary_key=True, index=True)
+    org_id = Column(String)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
     invoice_details = Column(String)
     total_amount = Column(String)
+    date = Column(String)
+    time = Column(String)
     
 # class Schedule(Base):
 #     pass

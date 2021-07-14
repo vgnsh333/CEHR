@@ -46,14 +46,16 @@ class User(Userbase):
     class Config:
         orm_mode = True
 
+
+
 # Practitioner
 
 class PractitionerBase(BaseModel):
     status : str
     department : str
-    photo : str
     user_id : int
 class Practitioner(PractitionerBase):
+    photo : str
     practitioner_id : int
     class Config:
         orm_mode = True
@@ -68,9 +70,9 @@ class PatientBase(BaseModel):
     contact_number : str
     bloodgroup : str
     status : str
-    photo : str
     user_id : int
 class Patient(PatientBase):
+    photo : str
     patient_id : int 
     class Config:
         orm_mode = True
@@ -80,20 +82,28 @@ class Patient(PatientBase):
 class CareTeamBase(BaseModel):
     status : str 
     department : str
-    photo : str
     user_id : str
 class CareTeam(CareTeamBase):
+    photo : str
     careteam_id : int
     class Config:
         orm_mode = True
+
+# FULL CARE
+class fullCareteam(User):
+    status : str 
+    department : str
+    user_id : str
+    photo : str
+    careteam_id : int
 
 # Admin
 
 class AdminBase(BaseModel):
     status : str
-    photo : str
     user_id : str
 class Admin(AdminBase):
+    photo : str
     admin_id : int
     class Config:
         orm_mode = True
@@ -259,6 +269,7 @@ class FamilyHistory(FamilyHistoryBase):
 class InvoiceBase(BaseModel):
     patient_id  : int
     invoice_details : str
+    org_id: int
 class Invoice(InvoiceBase):
     total_amount : str
     invoice_id : str

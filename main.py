@@ -19,6 +19,10 @@ origins = ['*']
 # REMOVE REPORT 
 # Procedure -> remove performerFunction ; focalDeviceAction.csv
 # ADD API FOR GETTING BMI OF A SINGLE PATIENT
+
+# return db.query(models.Care_team.department,func.count(models.Care_team.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "C").group_by(models.Care_team.department).all()
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -76,6 +80,32 @@ def create_org(org: schemas.OrgCreate, db: Session = Depends(get_db)):
 def get_all_orgs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_orgs(db, skip=skip, limit=limit)
 
+@app.get("/orgs/careteams/{org_id}", tags=["Organization"])
+def get_org_careteam(org_id: int, db: Session = Depends(get_db)):
+    temp_obj = crud.get_careteams_of_org(db, org_id=org_id)
+    print(len(temp_obj))
+    if temp_obj is None:
+        raise HTTPException(status_code=404, detail="Org not found")
+    return temp_obj
+
+@app.get("/orgs/patients/{org_id}", tags=["Organization"])
+def get_patients_of_org(org_id: int, db: Session = Depends(get_db)):
+    temp_obj = crud.get_patients_of_org(db, org_id=org_id)
+    print(len(temp_obj))
+    if temp_obj is None:
+        raise HTTPException(status_code=404, detail="Org not found")
+    return temp_obj
+
+@app.get("/orgs/practitioners/{org_id}", tags=["Organization"])
+def get_practitioners_of_org(org_id: int, db: Session = Depends(get_db)):
+    temp_obj = crud.get_practitioners_of_org(db, org_id=org_id)
+    print(len(temp_obj))
+    if temp_obj is None:
+        raise HTTPException(status_code=404, detail="Org not found")
+    return temp_obj
+
+
+
 
 @app.get("/org/{org_id}", response_model=schemas.Org, tags=["Organization"])
 def get_org(org_id: int, db: Session = Depends(get_db)):
@@ -123,11 +153,11 @@ def get_patient(patient_id: int, db: Session = Depends(get_db)):
 def create_Careteam(CareTeam: schemas.CareTeamBase, db: Session = Depends(get_db)):
     return crud.create_careteam(db ,CareTeam)
 
-@app.get("/careteam/all", response_model=List[schemas.CareTeam], tags=["Careteam"])
-def get_all_Careteam(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_careteams(db, skip=skip, limit=limit)
+@app.get("/careteam/all/{org_id}", response_model=List[schemas.CareTeam], tags=["Careteam"])
+def get_all_Careteam(org_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.get_careteams(db,org_id=org_id, skip=skip, limit=limit)
 
-@app.get("/careteam/{careteam_id}", response_model=schemas.CareTeam, tags=["Careteam"])
+@app.get("/careteam/{careteam_id}/{org_id}", tags=["Careteam"])
 def get_Careteam(careteam_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_careteam(db, careteam_id)
     if temp_obj is None:

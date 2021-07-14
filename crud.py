@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 import models, schemas
 
 
@@ -15,6 +16,16 @@ def create_org(db: Session, org: schemas.OrgCreate):
     db.commit()
     db.refresh(db_org)
     return db_org
+
+def get_careteams_of_org(db: Session, org_id: int):
+    return db.query(models.user_details,models.Care_team).join(models.Care_team, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "C").all()
+
+def get_patients_of_org(db: Session, org_id: int):
+    return db.query(models.user_details,models.Patient).join(models.Patient, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Practitioner").all()
+
+def get_practitioners_of_org(db: Session, org_id: int):
+    return db.query(models.user_details,models.Practitioner).join(models.Practitioner, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Patient").all()
+
 
 # Beds functions
 def get_beds(db: Session, skip: int = 0, limit: int = 100):
@@ -87,9 +98,10 @@ def create_careteam(db: Session, careteam: schemas.CareTeamBase):
     return db_obj
     
 def get_careteam(db: Session, careteam_id: int):
-    return db.query(models.Care_team).filter(models.Care_team.careteam_id == careteam_id).first()
+    return db.query(models.Care_team,models.user_details).join(models.user_details,full=True).filter(models.Care_team.careteam_id == careteam_id).first()
+    
 
-def get_careteams(db: Session, skip: int = 0, limit: int = 100):
+def get_careteams(db: Session, org_id:int , skip: int = 0, limit: int = 100):
     return db.query(models.Care_team).offset(skip).limit(limit).all()
 
 # Admin
