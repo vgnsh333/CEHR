@@ -202,12 +202,22 @@ def create_appointment(appointment: schemas.AppointmentBase, db: Session = Depen
 def get_all_appointments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_appointments(db, skip=skip, limit=limit)
 
-@app.get("/appointment/of/{patient_id}", response_model=List[schemas.Appointment], tags=["Appointment"])
+@app.get("/appointment/of/patient/{patient_id}", response_model=List[schemas.Appointment], tags=["Appointment"])
 def get_appointments_of_patient(patient_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_appointment_of_patient(db,patient_id)
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
+
+@app.get("/appointment/of/practitioner/{practitioner_id}", response_model=List[schemas.Appointment], tags=["Appointment"])
+def get_appointments_of_praticioner(practitioner_id: int, db: Session = Depends(get_db)):
+    temp_obj = crud.get_appointment_of_practitioner(db,practitioner_id)
+    print('HELLO')
+    print('hello', temp_obj.one())  
+    if temp_obj is None:
+        raise HTTPException(status_code=404, detail=" not found")
+    return temp_obj
+
 
 
 @app.get("/appointment/{appointment_id}", response_model=schemas.Appointment, tags=["Appointment"])
@@ -327,14 +337,14 @@ def create_medication(Medication: schemas.MedicationBase, db: Session = Depends(
 def get_all_medication(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_medications(db, skip=skip, limit=limit)
 
-@app.get("/medication/of/{medication_id}", response_model=List[schemas.Medication], tags=["Medication"])
+@app.get("/medication/by/{medication_id}", response_model=List[schemas.Medication], tags=["Medication"])
 def get_medication(medication_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_medication_of_patient(db,medication_id)
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
 
-@app.get("/medication/of/{patient_id}", response_model=List[schemas.Medication], tags=["Medication"])
+@app.get("/medication/of/patient/{patient_id}", response_model=List[schemas.Medication], tags=["Medication"])
 def get_medication_of_patient(patient_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_medication(db,patient_id)
     if temp_obj is None:
@@ -349,7 +359,7 @@ def create_statement(Statement: schemas.StatementBase, db: Session = Depends(get
 def get_all_statement(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_statements(db, skip=skip, limit=limit)
 
-@app.get("/statement/{statement_id}", response_model=schemas.Statement, tags=["Statement"])
+@app.get("/statement/by/{statement_id}", response_model=schemas.Statement, tags=["Statement"])
 def get_statement(statement_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_statement(db,statement_id)
     if temp_obj is None:
@@ -371,7 +381,7 @@ def create_bmi(BMI: schemas.BMIBase, db: Session = Depends(get_db)):
 def get_all_bmi(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_bmis(db, skip=skip, limit=limit)
 
-@app.get("/bmi/{bmi_id}", response_model=schemas.BMI, tags=["BMI"])
+@app.get("/bmi/by/{bmi_id}", response_model=schemas.BMI, tags=["BMI"])
 def get_bmi(bmi_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_bmi(db, bmi_id)
     if temp_obj is None:
@@ -415,7 +425,7 @@ def create_familyhistory(Family_history: schemas.FamilyHistoryBase, db: Session 
 def get_all_familyhistory(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_family_histories(db, skip=skip, limit=limit)
 
-@app.get("/familyhistory/{familyhistory_id}", response_model=schemas.FamilyHistory, tags=["Family_history"])
+@app.get("/familyhistory/by/{familyhistory_id}", response_model=schemas.FamilyHistory, tags=["Family_history"])
 def get_familyhistory(familyhistory_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_family_history(db, familyhistory_id)
     if temp_obj is None:
@@ -428,25 +438,15 @@ def get_familyhistory_of_patient(patient_id: int, db: Session = Depends(get_db))
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
-# Invoice
-@app.post("/invoice/add", response_model=schemas.Invoice, tags=["Invoice"])
-def create_invoice(invoice: schemas.InvoiceBase, db: Session = Depends(get_db)):
-    return crud.create_invoice(db,invoice)
+# Earning
+@app.post("/earning/add", response_model=schemas.HospitalEarning, tags=["Hospital Earning"])
+def create_earning(earning: schemas.HospitalEarningBase, db: Session = Depends(get_db)):
+    return crud.create_earning(db,earning)
 
-@app.get("/invoice/all", response_model=List[schemas.Invoice], tags=["Invoice"])
-def get_all_invoices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_invoices(db, skip=skip, limit=limit)
 
-@app.get("/invoice/{invoice_id}", response_model=schemas.Invoice, tags=["Invoice"])
-def get_invoice(invoice_id: int, db: Session = Depends(get_db)):
-    temp_obj = crud.get_invoice(db, invoice_id)
-    if temp_obj is None:
-        raise HTTPException(status_code=404, detail=" not found")
-    return temp_obj
-
-@app.get("/invoice/of/{patient_id}", response_model=List[schemas.Invoice], tags=["Invoice"])
-def get_invoice_of_patient(patient_id: int, db: Session = Depends(get_db)):
-    temp_obj = crud.get_invoice_of_patient(db, patient_id)
+@app.get("/earning/by/{earning_id}", response_model=schemas.HospitalEarning, tags=["Hospital Earning"])
+def get_earning_by_id(earning_id: int, db: Session = Depends(get_db)):
+    temp_obj = crud.get_earning(db, earning_id)
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
@@ -460,7 +460,7 @@ def create_Log(logs: schemas.LogsBase, db: Session = Depends(get_db)):
 def get_all_Logs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_logs(db, skip=skip, limit=limit)
 
-@app.get("/logs/{log_id}", response_model=schemas.Logs, tags=["Logs"])
+@app.get("/logs/by/{log_id}", response_model=schemas.Logs, tags=["Logs"])
 def get_Log(log_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_log(db, log_id)
     if temp_obj is None:
@@ -476,7 +476,7 @@ def get_Logs_of_patient(patient_id: int, db: Session = Depends(get_db)):
 
 # beds
 
-@app.post("/beds/add", response_model=schemas.Bed, tags=["Beds"])
+@app.post("/beds/add",  tags=["Beds"])
 def create_bed(bed: schemas.BedCreate, db: Session = Depends(get_db)):
     return crud.create_bed(db, bed)
 
@@ -490,9 +490,43 @@ def get_bed_of_patient(patient_id: int, db: Session = Depends(get_db)):
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
-@app.get("/beds/{bed_id}", response_model=schemas.Bed, tags=["Beds"])
-def get_bed(bed_id: int, db: Session = Depends(get_db)):
-    temp_obj = crud.get_log(db, bed_id)
+
+@app.get("/beds/by/{bed_id}", tags=["Beds"])
+def get_bed_by_ID(bed_id: int, db: Session = Depends(get_db)):
+    temp_obj = crud.get_bed_by_id(db, bed_id)
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
+
+# Hospital Analytics
+
+@app.get("/analytics/status/beds/{org_id}",  tags=["analytics"])
+def get_occupied_beds_of_org(org_id: int, db: Session = Depends(get_db)):
+    return crud.get_beds_of_org(db, org_id)
+
+
+@app.get("/analytics/stats/department/caretaker/{org_id}",  tags=["analytics"])
+def group_careteam_by_department_of_org(org_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.group_careteam_by_department_of_org(db, org_id, skip=skip, limit=limit)
+
+
+@app.get("/analytics/stats/department/practitioner/{org_id}",  tags=["analytics"])
+def group_practitioner_by_department_of_org(org_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.group_practitioner_by_department_of_org(db, org_id, skip=skip, limit=limit)
+
+
+@app.get("/analytics/stats/gender/patient/{org_id}",  tags=["analytics"])
+def group_patients_by_gender_of_org(org_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.group_patients_by_gender_of_org(db, org_id, skip=skip, limit=limit)
+
+@app.get("/analytics/stats/counts/allentities/{org_id}",  tags=["analytics"])
+def group_entities_of_org(org_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.group_entities_of_org(db, org_id, skip=skip, limit=limit)
+
+@app.get("/analytics/stats/hospital/earning/{org_id}",  tags=["analytics"])
+def get_earning_of_org(org_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    temp_obj = crud.get_earning_of_org(db, org_id)
+    if temp_obj is None:
+        raise HTTPException(status_code=404, detail=" not found")
+    return temp_obj
+

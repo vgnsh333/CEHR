@@ -32,10 +32,15 @@ def get_beds(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.beds).offset(skip).limit(limit).all()
 
 def get_beds_of_patient(db: Session, patient_id: int):
-    return db.query(models.beds).filter(models.beds.patient_id == patient_id).all()
+    return db.query(models.beds).filter(models.beds.alloted_to == patient_id).all()
+def get_bed_by_id(db: Session, bed_id: int):
+    return db.query(models.beds).filter(models.beds.id == bed_id).all()
+
+
+
 
 def create_bed(db: Session, bed: schemas.BedCreate):
-    db_bed = models.Org(alloted_to=bed.alloted_to, org_name=bed.org_name)
+    db_bed = models.beds(alloted_to=bed.alloted_to, org_ID=bed.org_ID)
     db.add(db_bed)
     db.commit()
     db.refresh(db_bed)
@@ -104,6 +109,8 @@ def get_careteam(db: Session, careteam_id: int):
 def get_careteams(db: Session, org_id:int , skip: int = 0, limit: int = 100):
     return db.query(models.Care_team).offset(skip).limit(limit).all()
 
+
+
 # Admin
 def create_admin(db: Session, admin: schemas.AdminBase):
     temp = admin.dict()
@@ -130,6 +137,9 @@ def create_appointment(db: Session, appointment: schemas.AppointmentBase):
 
 def get_appointment_of_patient(db: Session, patient_id: int):
     return db.query(models.Appointment).filter(models.Appointment.patient_id == patient_id).all()
+
+def get_appointment_of_practitioner(db: Session, practitioner_id: int):
+    return db.query(models.Appointment).filter(models.Appointment.practitioner_id == practitioner_id).all()
 
 
 def get_appointment(db: Session, appointment_id: int):
@@ -319,22 +329,22 @@ def get_family_histories(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Family_history).offset(skip).limit(limit).all()
 
 # Invoice
-def create_invoice(db: Session, invoice: schemas.InvoiceBase):
-    temp = invoice.dict()
-    db_obj = models.invoice(**temp)
+def create_earning(db: Session, earning: schemas.HospitalEarningBase):
+    temp = earning.dict()
+    db_obj = models.hospital_earning(**temp)
     db.add(db_obj)
     db.commit()
     db.refresh(db_obj)
     return db_obj
     
-def get_invoice(db: Session, invoice_id: int):
-    return db.query(models.invoice).filter(models.invoice.invoice_id == invoice_id).first()
+def get_earning(db: Session, earning_id: int):
+    return db.query(models.hospital_earning).filter(models.hospital_earning.earning_id == earning_id).first()
     
-def get_invoice_of_patient(db: Session, patient_id: int):
-    return db.query(models.invoice).filter(models.invoice.patient_id == patient_id).all()
+def get_earnings_of_org(db: Session, org_id: int):
+    return db.query(models.hospital_earning).filter(models.hospital_earning.org_id == org_id).all()
 
-def get_invoices(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.invoice).offset(skip).limit(limit).all()
+# def get_invoices(db: Session, skip: int = 0, limit: int = 100):
+#     return db.query(models.invoice).offset(skip).limit(limit).all()
 
 # Logs
 def create_log(db: Session, logs: schemas.LogsBase):
@@ -353,3 +363,25 @@ def get_log_of_patient(db: Session, patient_id: int):
 
 def get_logs(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.logs).offset(skip).limit(limit).all()
+
+
+# Analytics
+
+def group_careteam_by_department_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
+    return db.query(models.Care_team.department,func.count(models.Care_team.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "C").group_by(models.Care_team.department).all()
+
+def group_practitioner_by_department_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
+    return db.query(models.Practitioner.department,func.count(models.Practitioner.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Practitioner").group_by(models.Practitioner.department).all()
+
+def group_patients_by_gender_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
+    return db.query(models.user_details.gender,func.count(models.user_details.gender)).filter(models.user_details.org_id == org_id).group_by(models.user_details.gender).all()
+
+def group_entities_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
+    return db.query(models.user_details.entity_type,func.count(models.user_details.entity_type)).filter(models.user_details.org_id == org_id).group_by(models.user_details.entity_type).all()
+
+
+def get_beds_of_org(db: Session, org_id: int):
+    return db.query(models.beds.is_occupied, func.count(models.beds.is_occupied)).filter(models.beds.org_ID == org_id).filter(models.beds.is_occupied == "True").group_by(models.beds.is_occupied).all()
+
+def get_earning_of_org(db: Session, org_id: str):
+    return db.query(models.hospital_earning).filter(models.hospital_earning.org_id == org_id).all()

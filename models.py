@@ -14,7 +14,7 @@ class Org(Base):
 class beds(Base):
     __tablename__ = "beds"
     id = Column(Integer, primary_key=True, index=True)
-    alloted_to = Column(String)
+    alloted_to = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
     is_occupied = Column(Boolean, default=True)
     org_ID = Column(Integer, ForeignKey("org.org_ID"), nullable=False)
 
@@ -51,7 +51,7 @@ class Patient(Base):
     contact_relationship = Column(String)
     contact_name = Column(String)
     contact_number = Column(String)
-    bloodgroup = Column(String)
+    contact_bloodgroup = Column(String)
     status = Column(String)
     photo = Column(String, default='https://simplyilm.com/wp-content/uploads/2017/08/temporary-profile-placeholder-1.jpg')
     user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
@@ -112,7 +112,7 @@ class Procedure(Base):
     __tablename__ = "procedure"
     procedure_id = Column(Integer, primary_key=True, index=True)
     category = Column(String)
-    code = Column(String)
+    #code = Column(String)
     complication = Column(String)
     follow_up = Column(String)
     outcome = Column(String)
@@ -180,7 +180,7 @@ class Problem(Base):
     category = Column(String)
     clinical_status = Column(String)
     code = Column(String)
-    evidence_code = Column(String)
+    #evidence_code = Column(String)
     reaction_severity = Column(String)
     severity = Column(String)
     
@@ -190,22 +190,19 @@ class Family_history(Base):
     familyhistory_id = Column(Integer, primary_key=True, index=True)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
     condition_code = Column(String)
-    condition_outcome = Column(String)
-    data_absent_reason = Column(String)
-    reason_code = Column(String)
+    #condition_outcome = Column(String)
+    #data_absent_reason = Column(String)
+    #reason_code = Column(String)
     relationship = Column(String)
     sex = Column(String)
     status = Column(String)
     
-class invoice(Base):
-    __tablename__ = "invoice"
-    invoice_id = Column(Integer, primary_key=True, index=True)
-    org_id = Column(String)
-    patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
-    invoice_details = Column(String)
-    total_amount = Column(String)
+class hospital_earning(Base):
+    __tablename__ = "hospital_earning"
+    earning_id = Column(Integer, primary_key=True, index=True)
+    org_id = Column(Integer, ForeignKey("org.org_ID"), nullable=False)
+    amount = Column(Integer)
     date = Column(String)
-    time = Column(String)
     
 # class Schedule(Base):
 #     pass

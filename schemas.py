@@ -14,8 +14,8 @@ class Org(OrgBase):
         orm_mode = True
 
 class BedBase(BaseModel):
-    alloted_to: str
-    org_name: str
+    alloted_to: int
+    org_ID: int
     
 class BedCreate(BedBase):
     pass
@@ -152,7 +152,7 @@ class Observation(ObservationBase):
 
 class ProcedureBase(BaseModel):
     category : str
-    code : str
+    #code : str
     complication : str
     follow_up : str
     outcome : str
@@ -176,7 +176,6 @@ class AllergyBase(BaseModel):
     reaction_exposure_route : str
     reaction_manifestation : str
     reaction_substance : str
-    code : str
 class Allergy(AllergyBase):
     allergy_id  : int
     class Config:
@@ -240,7 +239,7 @@ class ProblemBase(BaseModel):
     category : str
     clinical_status : str
     code : str
-    evidence_code : str
+    #evidence_code : str
     reaction_severity : str
     severity : str
     
@@ -253,9 +252,9 @@ class Problem(ProblemBase):
 class FamilyHistoryBase(BaseModel):
     patient_id  : str
     condition_code : str
-    condition_outcome : str
-    data_absent_reason : str
-    reason_code : str
+    #condition_outcome : str
+    #data_absent_reason : str
+    #reason_code : str
     relationship : str
     sex : str
     status : str
@@ -266,13 +265,12 @@ class FamilyHistory(FamilyHistoryBase):
 
 
 
-class InvoiceBase(BaseModel):
-    patient_id  : int
-    invoice_details : str
+class HospitalEarningBase(BaseModel):
     org_id: int
-class Invoice(InvoiceBase):
-    total_amount : str
-    invoice_id : str
+    amount : int
+    date : str
+class HospitalEarning(HospitalEarningBase):
+    earning_id : int
     class Config:
         orm_mode = True
 
