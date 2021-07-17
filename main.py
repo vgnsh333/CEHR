@@ -32,10 +32,6 @@ app.add_middleware(
 )
 manager = LoginManager(SECRET, token_url='/auth/token')
 fake_db = {'j': {'password': 'h'}}
-@manager.user_loader
-def load_user(email: str):  # could also be an asynchronous function
-    user = fake_db.get(email)
-    return user
 
 # Dependency
 def get_db():
@@ -44,31 +40,39 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@manager.user_loader
+def load_user(username: str, db ):  # could also be an asynchronous function
+    user = db.query(models.user_details).filter(models.user_details.username == username).first()
+    return user
 @app.get("/")
 async def root():
     return {"message": "Hello! Go to /docs :)"}
-@app.post('/auth/token')
-def login(data: OAuth2PasswordRequestForm = Depends()):
-    email = data.username
+@app.post('/auth/token' )
+def login(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    username = data.username
     password = data.password
 
-    user = load_user(email)  # we are using the same function to retrieve the user
+    user = load_user(username,db)  # we are using the same function to retrieve the user
+    print('in auth', user.password)
     if not user:
         raise InvalidCredentialsException  # you can also use your own HTTPException
-    elif password != user['password']:
-        raise InvalidCredentialsException
+    #elif password != user['password']:
+    #    raise InvalidCredentialsException
 
     access_token = manager.create_access_token(
-        data=dict(sub=email)
+        data=dict(sub=username)
     )
-    return {'access_token': access_token, 'token_type': 'bearer'}
+    return {'access_token': access_token, 'token_type': 'bearer', 'entity_type' : user.entity_type,
+     'user_id' : user.user_id,
+     'org_id': user.org_id }
 
 # Org
 
 @app.post("/org/add", response_model=schemas.Org, tags=["Organization"])
 def create_org(org: schemas.OrgCreate, db: Session = Depends(get_db)):
     print(org)
-    temp_obj =db.query(models.Org).filter(models.Org.org_name == org.org_name).first()
+    temp_obj = db.query(models.Org).filter(models.Org.org_name == org.org_name).first()
     if temp_obj:
         raise HTTPException(status_code=406, detail="Org name taken")
     return crud.create_org(db=db, org=org)
