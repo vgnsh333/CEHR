@@ -224,7 +224,6 @@ def get_appointments_of_patient(patient_id: int, db: Session = Depends(get_db)):
 def get_appointments_of_praticioner(practitioner_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_appointment_of_practitioner(db,practitioner_id)
     print('HELLO')
-    print('hello', temp_obj.one())  
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
@@ -350,14 +349,14 @@ def get_all_medication(skip: int = 0, limit: int = 100, db: Session = Depends(ge
 
 @app.get("/medication/by/{medication_id}", response_model=List[schemas.Medication], tags=["Medication"])
 def get_medication(medication_id: int, db: Session = Depends(get_db)):
-    temp_obj = crud.get_medication_of_patient(db,medication_id)
+    temp_obj = crud.get_medication(db,medication_id)
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
 
 @app.get("/medication/of/patient/{patient_id}", response_model=List[schemas.Medication], tags=["Medication"])
 def get_medication_of_patient(patient_id: int, db: Session = Depends(get_db)):
-    temp_obj = crud.get_medication(db,patient_id)
+    temp_obj = crud.get_medication_of_patient(db,patient_id)
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
@@ -401,7 +400,7 @@ def get_bmi(bmi_id: int, db: Session = Depends(get_db)):
 
 @app.get("/bmi/of/{patient_id}", response_model=List[schemas.BMI], tags=["BMI"])
 def get_bmi_of_patient(patient_id: int, db: Session = Depends(get_db)):
-    temp_obj = crud.get_bmi(db, patient_id)
+    temp_obj = crud.get_bmi_of_patient(db, patient_id)
     if temp_obj is None:
         raise HTTPException(status_code=404, detail=" not found")
     return temp_obj
@@ -491,11 +490,11 @@ def get_Logs_of_patient(patient_id: int, db: Session = Depends(get_db)):
 def create_bed(bed: schemas.BedCreate, db: Session = Depends(get_db)):
     return crud.create_bed(db, bed)
 
-@app.get("/beds/all", response_model=List[schemas.Bed], tags=["Beds"])
+@app.get("/beds/all", tags=["Beds"])
 def get_all_beds(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_beds(db, skip=skip, limit=limit)
 
-@app.get("/beds/of/{patient_id}", response_model=List[schemas.Bed], tags=["Beds"])
+@app.get("/beds/of/{patient_id}",  tags=["Beds"])
 def get_bed_of_patient(patient_id: int, db: Session = Depends(get_db)):
     temp_obj = crud.get_beds_of_patient(db, patient_id)
     if temp_obj is None:
@@ -516,7 +515,7 @@ def get_occupied_beds_of_org(org_id: int, db: Session = Depends(get_db)):
     return crud.get_beds_of_org(db, org_id)
 
 
-@app.get("/analytics/stats/department/caretaker/{org_id}",  tags=["analytics"])
+@app.get("/analytics/stats/department/careteam/{org_id}",  tags=["analytics"])
 def group_careteam_by_department_of_org(org_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.group_careteam_by_department_of_org(db, org_id, skip=skip, limit=limit)
 

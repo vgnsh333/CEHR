@@ -20,7 +20,7 @@ class BedBase(BaseModel):
 class BedCreate(BedBase):
     pass
 class Bed(BedBase):
-    id: int
+    bed_id: int
     is_occupied: bool
 
 # User
@@ -68,7 +68,7 @@ class PatientBase(BaseModel):
     contact_relationship : str
     contact_name : str
     contact_number : str
-    bloodgroup : str
+    contact_bloodgroup : str
     status : str
     user_id : int
 class Patient(PatientBase):
@@ -250,11 +250,8 @@ class Problem(ProblemBase):
 
 
 class FamilyHistoryBase(BaseModel):
-    patient_id  : str
+    patient_id  : int
     condition_code : str
-    #condition_outcome : str
-    #data_absent_reason : str
-    #reason_code : str
     relationship : str
     sex : str
     status : str

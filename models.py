@@ -11,12 +11,6 @@ class Org(Base):
     org_type = Column(String)
     max_bed = Column(String)
     
-class beds(Base):
-    __tablename__ = "beds"
-    id = Column(Integer, primary_key=True, index=True)
-    alloted_to = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
-    is_occupied = Column(Boolean, default=True)
-    org_ID = Column(Integer, ForeignKey("org.org_ID"), nullable=False)
 
 class user_details(Base): 
     __tablename__ = "user_details"
@@ -55,6 +49,13 @@ class Patient(Base):
     status = Column(String)
     photo = Column(String, default='https://simplyilm.com/wp-content/uploads/2017/08/temporary-profile-placeholder-1.jpg')
     user_id = Column(Integer, ForeignKey("user_details.user_id"), nullable=False, unique=True)
+
+class beds(Base):
+    __tablename__ = "beds"
+    bed_id = Column(Integer, primary_key=True, index=True)
+    alloted_to = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
+    is_occupied = Column(Boolean, default=True)
+    org_ID = Column(Integer, ForeignKey("org.org_ID"), nullable=False)
 
 class Care_team(Base):
     __tablename__ = "care_team"
@@ -190,9 +191,6 @@ class Family_history(Base):
     familyhistory_id = Column(Integer, primary_key=True, index=True)
     patient_id  = Column(Integer, ForeignKey("patient.patient_id"), nullable=False)
     condition_code = Column(String)
-    #condition_outcome = Column(String)
-    #data_absent_reason = Column(String)
-    #reason_code = Column(String)
     relationship = Column(String)
     sex = Column(String)
     status = Column(String)

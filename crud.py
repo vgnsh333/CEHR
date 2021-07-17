@@ -31,10 +31,10 @@ def get_practitioners_of_org(db: Session, org_id: int):
 def get_beds(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.beds).offset(skip).limit(limit).all()
 
-def get_beds_of_patient(db: Session, patient_id: int):
-    return db.query(models.beds).filter(models.beds.alloted_to == patient_id).all()
+def get_beds_of_patient(db: Session, alloted_to: int):
+    return db.query(models.beds).filter(models.beds.alloted_to == alloted_to).all()
 def get_bed_by_id(db: Session, bed_id: int):
-    return db.query(models.beds).filter(models.beds.id == bed_id).all()
+    return db.query(models.beds).filter(models.beds.bed_id == bed_id).all()
 
 
 
@@ -72,10 +72,10 @@ def create_practitioner(db: Session, practitioner: schemas.PractitionerBase):
     return db_obj
     
 def get_practitioner(db: Session, practitioner_id: int):
-    return db.query(models.practitioner).filter(models.practitioner.practitioner_id == practitioner_id).first()
+    return db.query(models.Practitioner).filter(models.Practitioner.practitioner_id == practitioner_id).first()
 
 def get_practitioners(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.practitioner).offset(skip).limit(limit).all()
+    return db.query(models.Practitioner).offset(skip).limit(limit).all()
 
 # Patient
 def create_patient(db: Session, Patient: schemas.PatientBase):
@@ -368,14 +368,36 @@ def get_logs(db: Session, skip: int = 0, limit: int = 100):
 # Analytics
 
 def group_careteam_by_department_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
-    return db.query(models.Care_team.department,func.count(models.Care_team.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "CareTeam").group_by(models.Care_team.department).all()
+    temp = db.query(models.Care_team.department,func.count(models.Care_team.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Careteam").group_by(models.Care_team.department).all()
+    #print('heelo')
+    temparr = []
+    for x in temp:
+        tempdict = {'name' : x[0] , 'value' : x[1]}
+        print(tempdict)
+        temparr.append(tempdict)
+    return temparr
 
 def group_practitioner_by_department_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
-    return db.query(models.Practitioner.department,func.count(models.Practitioner.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Practitioner").group_by(models.Practitioner.department).all()
+    temp =  db.query(models.Practitioner.department,func.count(models.Practitioner.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Practitioner").group_by(models.Practitioner.department).all()
+    temparr = []
+    #print(len(temp))
+    for x in temp:
+        tempdict = {'name' : x[0] , 'value' : x[1]}
+        print(tempdict)
+        temparr.append(tempdict)
+    return temparr
+    
 
 def group_patients_by_gender_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
-    return db.query(models.user_details.gender,func.count(models.user_details.gender)).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Patient").group_by(models.user_details.gender).all()
-
+    temp = db.query(models.user_details.gender,func.count(models.user_details.gender)).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Patient").group_by(models.user_details.gender).all()
+    temparr = []
+    print(temp)
+    for x in temp:
+        tempdict = {'name' : x[0] , 'value' : x[1]}
+        print(tempdict)
+        temparr.append(tempdict)
+    return temparr
+    
 def group_entities_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
     return db.query(models.user_details.entity_type,func.count(models.user_details.entity_type)).filter(models.user_details.org_id == org_id).group_by(models.user_details.entity_type).all()
 
