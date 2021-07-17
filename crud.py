@@ -368,13 +368,13 @@ def get_logs(db: Session, skip: int = 0, limit: int = 100):
 # Analytics
 
 def group_careteam_by_department_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
-    return db.query(models.Care_team.department,func.count(models.Care_team.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "C").group_by(models.Care_team.department).all()
+    return db.query(models.Care_team.department,func.count(models.Care_team.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "CareTeam").group_by(models.Care_team.department).all()
 
 def group_practitioner_by_department_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
     return db.query(models.Practitioner.department,func.count(models.Practitioner.department)).join(models.user_details, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Practitioner").group_by(models.Practitioner.department).all()
 
 def group_patients_by_gender_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
-    return db.query(models.user_details.gender,func.count(models.user_details.gender)).filter(models.user_details.org_id == org_id).group_by(models.user_details.gender).all()
+    return db.query(models.user_details.gender,func.count(models.user_details.gender)).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Patient").group_by(models.user_details.gender).all()
 
 def group_entities_of_org(db: Session, org_id:int , skip: int = 0, limit: int = 100):
     return db.query(models.user_details.entity_type,func.count(models.user_details.entity_type)).filter(models.user_details.org_id == org_id).group_by(models.user_details.entity_type).all()

@@ -69,8 +69,6 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
 def create_org(org: schemas.OrgCreate, db: Session = Depends(get_db)):
     print(org)
     temp_obj =db.query(models.Org).filter(models.Org.org_name == org.org_name).first()
-    print('hellllllllllloooooooooo')
-    print(temp_obj)
     if temp_obj:
         raise HTTPException(status_code=406, detail="Org name taken")
     return crud.create_org(db=db, org=org)
@@ -118,7 +116,16 @@ def get_org(org_id: int, db: Session = Depends(get_db)):
 
 @app.post("/user/add", response_model=schemas.User, tags=["Users"])
 def create_user(user: schemas.userCreate, db: Session = Depends(get_db)):
-    print(user)
+    temp_obj =db.query(models.user_details).filter(models.user_details.username == user.username).first()
+    if temp_obj:
+        raise HTTPException(status_code=406, detail="Username name taken")
+    temp_obj =db.query(models.user_details).filter(models.user_details.aadhar == user.aadhar).first()
+    if temp_obj:
+        raise HTTPException(status_code=406, detail="Aadhar already registered")
+    temp_obj = crud.get_org(db, org_id=user.org_id)
+    if temp_obj is None:
+        raise HTTPException(status_code=404, detail="Invalid Organization ID")
+    
     return crud.create_user(db=db, user=user)
 
 @app.get("/user/all", response_model=List[schemas.User], tags=["Users"])
