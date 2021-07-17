@@ -57,8 +57,8 @@ def login(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     print('in auth', user.password)
     if not user:
         raise InvalidCredentialsException  # you can also use your own HTTPException
-    #elif password != user['password']:
-    #    raise InvalidCredentialsException
+    elif password != user.password:
+        raise InvalidCredentialsException
 
     access_token = manager.create_access_token(
         data=dict(sub=username)
