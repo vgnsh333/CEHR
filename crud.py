@@ -18,7 +18,7 @@ def create_org(db: Session, org: schemas.OrgCreate):
     return db_org
 
 def get_careteams_of_org(db: Session, org_id: int):
-    return db.query(models.user_details,models.Care_team).join(models.Care_team, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "C").all()
+    return db.query(models.user_details,models.Care_team).join(models.Care_team, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Careteam").all()
 
 def get_patients_of_org(db: Session, org_id: int):
     return db.query(models.user_details,models.Patient).join(models.Patient, full = True).filter(models.user_details.org_id == org_id).filter(models.user_details.entity_type == "Practitioner").all()
