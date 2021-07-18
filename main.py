@@ -31,7 +31,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 manager = LoginManager(SECRET, token_url='/auth/token')
-fake_db = {'j': {'password': 'h'}}
 
 # Dependency
 def get_db():
@@ -48,13 +47,13 @@ def load_user(username: str, db ):  # could also be an asynchronous function
 @app.get("/")
 async def root():
     return {"message": "Hello! Go to /docs :)"}
-@app.post('/auth/token' )
+@app.post('/auth/token')
 def login(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     username = data.username
     password = data.password
 
     user = load_user(username,db)  # we are using the same function to retrieve the user
-    print('in auth', user.password)
+    print('in auth', user.entity_type)
     if not user:
         raise InvalidCredentialsException  # you can also use your own HTTPException
     elif password != user.password:
@@ -63,9 +62,27 @@ def login(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     access_token = manager.create_access_token(
         data=dict(sub=username)
     )
+    if user.entity_type == "Patient":
+        print('Patient logged in')
+        temp = db.query(models.Patient).filter(models.Patient.user_id == user.user_id).first()
+        print('Practitioner logged in',temp.patient_id)
+        entity_id = temp.patient_id
+
+    if user.entity_type == "Practitioner":
+        temp = db.query(models.Practitioner).filter(models.Practitioner.user_id == user.user_id).first()
+        print('Practitioner logged in',temp.practitioner_id)
+        entity_id = temp.practitioner_id
+
+    if user.entity_type == "Careteam":
+        print('Careteam logged in')
+        temp = db.query(models.Care_team).filter(models.Care_team.user_id == user.user_id).first()
+        print('ye Practitioner',temp.careteam_id)
+        entity_id = temp.careteam_id
+
     return {'access_token': access_token, 'token_type': 'bearer', 'entity_type' : user.entity_type,
      'user_id' : user.user_id,
-     'org_id': user.org_id }
+     'org_id': user.org_id,
+     'entity_id' : entity_id }
 
 # Org
 
